@@ -1,0 +1,180 @@
+To set up MongoDB on Ubuntu and create a simple Express app that connects to MongoDB using Node.js, follow these steps:
+
+### Step 1: Install MongoDB on Ubuntu
+
+1. **Update system packages**:
+   Open your terminal and run the following command to ensure your system packages are up-to-date:
+   ```bash
+   sudo apt update
+   sudo apt upgrade
+   ```
+
+2. **Import the MongoDB public key**:
+   MongoDB provides a GPG key to authenticate the packages. You need to import it using the following command:
+   ```bash
+   wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
+   ```
+
+3. **Add MongoDB repository**:
+   For Ubuntu, MongoDB provides an official package repository. Add the repository for MongoDB 6.0 (latest stable version at the time of writing):
+   ```bash
+   echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -sc)/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+   ```
+
+4. **Install MongoDB**:
+   After adding the repository, update the apt package index again:
+   ```bash
+   sudo apt update
+   sudo apt install -y mongodb-org
+   ```
+
+5. **Start MongoDB service**:
+   After installing MongoDB, start the service and enable it to run on boot:
+   ```bash
+   sudo systemctl start mongod
+   sudo systemctl enable mongod
+   ```
+
+6. **Verify MongoDB is running**:
+   To check if MongoDB is running, use:
+   ```bash
+   sudo systemctl status mongod
+   ```
+   You should see the status as `active (running)`.
+
+### Step 2: Install Node.js and npm
+
+1. **Install Node.js (LTS version)**:
+   If you don't have Node.js installed, you can install it using the following commands:
+   ```bash
+   sudo apt install -y nodejs
+   sudo apt install -y npm
+   ```
+
+2. **Verify Node.js and npm versions**:
+   Check that Node.js and npm are installed correctly:
+   ```bash
+   node -v
+   npm -v
+   ```
+
+### Step 3: Set up a Basic Express Application
+
+1. **Create a new directory for your app**:
+   Navigate to the directory where you want to create your app:
+   ```bash
+   mkdir myexpressapp
+   cd myexpressapp
+   ```
+
+2. **Initialize a new Node.js project**:
+   Run the following command to initialize a `package.json` file:
+   ```bash
+   npm init -y
+   ```
+
+3. **Install required dependencies**:
+   You need `express` to build your server and `mongoose` to connect to MongoDB:
+   ```bash
+   npm install express mongoose
+   ```
+
+4. **Create a new file `server.js`**:
+   In the `myexpressapp` directory, create a file named `server.js` and open it in your editor:
+   ```bash
+   touch server.js
+   nano server.js
+   ```
+
+5. **Write the server code**:
+   In `server.js`, write the following code to set up a basic Express server that connects to MongoDB:
+
+   ```js
+   const express = require('express');
+   const mongoose = require('mongoose');
+   const app = express();
+   const port = 3000;
+
+   // MongoDB connection URI
+   const mongoURI = 'mongodb://localhost:27017/myapp';
+
+   // Connect to MongoDB using Mongoose
+   mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+     .then(() => console.log('Connected to MongoDB'))
+     .catch(err => console.log('MongoDB connection error: ', err));
+
+   // Simple route
+   app.get('/', (req, res) => {
+     res.send('Hello, Express and MongoDB!');
+   });
+
+   // Start the server
+   app.listen(port, () => {
+     console.log(`Server is running at http://localhost:${port}`);
+   });
+   ```
+
+### Step 4: Run Your Express App
+
+1. **Start the application**:
+   In the terminal, run your Express server:
+   ```bash
+   node server.js
+   ```
+
+2. **Test the app**:
+   Open your browser and go to `http://localhost:3000`. You should see the message: "Hello, Express and MongoDB!".
+
+3. **Check MongoDB data**:
+   You can open the MongoDB shell by running:
+   ```bash
+   mongo
+   ```
+
+   Then, check if the database `myapp` exists (it will be created once you interact with it). You can use the following commands:
+   ```bash
+   show dbs
+   use myapp
+   show collections
+   ```
+
+### Step 5: First MongoDB Login (Optional)
+
+If you'd like to secure MongoDB with authentication:
+
+1. **Create an admin user in MongoDB**:
+   Open the MongoDB shell (`mongo`) and run the following to create a user:
+   ```js
+   use admin
+   db.createUser({
+     user: "admin",
+     pwd: "password",  // Change this to a secure password
+     roles: [{ role: "userAdminAnyDatabase", db: "admin" }]
+   })
+   ```
+
+2. **Enable authentication**:
+   Edit the MongoDB configuration file (`/etc/mongod.conf`) to enable authentication:
+   ```bash
+   sudo nano /etc/mongod.conf
+   ```
+
+   In the `security` section, add:
+   ```yaml
+   security:
+     authorization: "enabled"
+   ```
+
+3. **Restart MongoDB**:
+   Restart MongoDB to apply the changes:
+   ```bash
+   sudo systemctl restart mongod
+   ```
+
+4. **Login with MongoDB user**:
+   Now, to access MongoDB with authentication, use:
+   ```bash
+   mongo -u admin -p password --authenticationDatabase admin
+   ```
+
+That's it! You now have MongoDB running on Ubuntu, and an Express app connected to MongoDB. You can extend the app by adding routes and more complex MongoDB queries.

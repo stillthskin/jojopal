@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+        <!-- Upload Product Section -->
+        <section class="upload-form">
+            <h2>Upload New Product</h2>
+            <form id="product-upload-form" action="" enctype="multipart/form-data">
+                <input type="text" name="name" id="product-name" placeholder="Product Name" required>
+                <input type="number" name="price" id="product-price" placeholder="Price" required>
+                <input type="text" name="productimage" id="product-image" placeholder="Image URL" required>
+                <select name="category" id="product-category" required>
+                    <option value="electronics">Electronics</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="home">Home Appliances</option>
+                </select>
+                <input type="file" name="productimage" multiple  accept="image/*"/>
+
+                <button type="submit">Upload Product</button>
+            </form>
+        </section>
+</body>
+<script src="upload.js"></script>
+</html>

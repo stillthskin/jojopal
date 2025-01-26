@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOJOPAL</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <h2>JOJOPAL TRENDS</h2>
+        <br/>
+        <nav>
+            <a href="#product-list">Shop</a> |
+            <a href="upload.html">Upload Product</a> |
+            <a href="eula.html">Terms</a> |
+            <a href="login.html">Login</a> |
+            <a href="login.html">About</a> |
+            <br/><br/>
+            <!-- Search Bar -->
+            <div id="search-bar">
+                <input type="text" id="search-input" placeholder="Search Products...">
+            </div>
+        </nav>
+    </header>
+
+    <!-- Cart Icon and Badge -->
+    <div id="cart-icon-container">
+        <button id="cart-icon">
+            🛒 <span id="cart-badge">0</span>
+        </button>
+    </div>
+
+    <!-- Category Filter -->
+    <div id="category-filter">
+        <select id="category-select">
+            <option value="">All Categories</option>
+            <option value="electronics">Electronics</option>
+            <option value="clothing">Clothing</option>
+            <option value="home">Home Appliances</option>
+        </select>
+    </div>
+
+    <!-- Product List Section -->
+    <section id="product-list">
+        <h2>Our Products</h2>
+        <!-- Dynamic Product Cards will be inserted here -->
+    </section>
+
+    <!-- Pagination -->
+    <div id="pagination">
+        <button id="prev-page">Prev</button>
+        <span id="page-number">Page 1</span>
+        <button id="next-page">Next</button>
+    </div>
+
+    <!-- Shopping Cart Section (Initially hidden) -->
+    <section id="cart" class="hidden">
+        <h2>Shopping Cart</h2>
+        <ul id="cart-items"></ul>
+        <p>Total: $<span id="cart-total">0.00</span></p>
+        <button id="clear-cart">Clear Cart</button>
+        <br/>
+        <button id="checkout-btn">Proceed to Checkout</button>
+    </section>
+
+    <!-- View More Popup -->
+    <div id="view-more-popup" class="popup">
+        <div class="popup-content">
+            <button id="close-popup">X</button>
+            <div id="popup-product-details">
+                <!-- Product details will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+  
+ 
+                    <li class="nav-item">
+                        <div class="social-icons">
+                            <a href="https://facebook.com" target="_blank" title="Facebook"><i
+                                    class="fab fa-facebook"></i></a>
+                            <a href="https://twitter.com" target="_blank" title="Twitter"><i
+                                    class="fab fa-twitter"></i></a>
+                            <a href="https://instagram.com" target="_blank" title="Instagram"><i
+                                    class="fab fa-instagram"></i></a>
+                            <a href="https://linkedin.com" target="_blank" title="LinkedIn"><i
+                                    class="fab fa-linkedin"></i></a>
+                            <a href="https://github.com" target="_blank" title="GitHub"><i
+                                    class="fab fa-github"></i></a>
+                        </div>
+                    </li>
+                </ul>
+
+    <!-- Link to the external JavaScript file -->
+    <script src="new.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,481 @@
+To set up MongoDB for your e-commerce system as described, we'll go through the process of creating a basic setup that includes models for products, cart, and orders. This will require:
+
+1. **MongoDB** setup with a database and collections.
+2. **Express.js** to handle routing and interactions between the frontend and MongoDB.
+3. Basic **mongoose models** for your product, cart, and order data.
+
+### Step 1: MongoDB Setup
+Make sure MongoDB is installed and running on your machine, or use a cloud service like [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) if you prefer. You will need the connection string for your database.
+
+Here’s how you can set up MongoDB locally and create a database:
+
+1. **Install MongoDB locally** (or use MongoDB Atlas).
+2. **Create a database** called `jojopal_trends`.
+3. Inside this database, create three collections:
+   - `products` for the product data.
+   - `carts` for user carts.
+   - `orders` for user orders.
+
+If you're using MongoDB Atlas, get the connection string (e.g., `mongodb+srv://<username>:<password>@cluster0.mongodb.net/jojopal_trends?retryWrites=true&w=majority`).
+
+### Step 2: Set Up Express.js Project
+1. Initialize a new Node.js project (if not already done).
+
+```bash
+mkdir jojopal-trends
+cd jojopal-trends
+npm init -y
+npm install express mongoose body-parser cors dotenv
+```
+
+2. **Create the server**: Set up the backend to handle product fetching, cart management, and order placement.
+
+### Step 3: Create the Backend (Express and MongoDB Integration)
+
+#### Project Structure:
+```
+jojopal-trends/
+│
+├── models/
+│   ├── product.js
+│   ├── cart.js
+│   └── order.js
+│
+├── routes/
+│   ├── productRoutes.js
+│   ├── cartRoutes.js
+│   └── orderRoutes.js
+│
+├── .env
+├── app.js
+└── package.json
+```
+
+### Step 4: Create Models for Product, Cart, and Order
+
+#### `models/product.js`:
+```javascript
+const mongoose = require('mongoose');
+
+const productSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    price: { type: Number, required: true },
+    imageUrl: { type: String, required: true },
+    category: { type: String, required: true },
+    description: { type: String, required: true },
+}, { timestamps: true });
+
+const Product = mongoose.model('Product', productSchema);
+module.exports = Product;
+```
+
+#### `models/cart.js`:
+```javascript
+const mongoose = require('mongoose');
+
+const cartSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
+    items: [
+        {
+            productId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Product' },
+            quantity: { type: Number, required: true }
+        }
+    ]
+}, { timestamps: true });
+
+const Cart = mongoose.model('Cart', cartSchema);
+module.exports = Cart;
+```
+
+#### `models/order.js`:
+```javascript
+const mongoose = require('mongoose');
+
+const orderSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
+    items: [
+        {
+            productId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Product' },
+            quantity: { type: Number, required: true },
+            price: { type: Number, required: true }
+        }
+    ],
+    totalAmount: { type: Number, required: true },
+    status: { type: String, default: 'Pending' },
+    orderDate: { type: Date, default: Date.now }
+}, { timestamps: true });
+
+const Order = mongoose.model('Order', orderSchema);
+module.exports = Order;
+```
+
+### Step 5: Create Routes for Products, Cart, and Orders
+
+#### `routes/productRoutes.js`:
+```javascript
+const express = require('express');
+const Product = require('../models/product');
+
+const router = express.Router();
+
+// Get all products (with optional search and category filter)
+router.get('/api/products', async (req, res) => {
+    const { search, category, page = 1, limit = 10 } = req.query;
+    try {
+        const query = {};
+        if (search) {
+            query.name = { $regex: search, $options: 'i' };
+        }
+        if (category) {
+            query.category = category;
+        }
+
+        const products = await Product.find(query)
+            .skip((page - 1) * limit)
+            .limit(Number(limit));
+
+        const totalCount = await Product.countDocuments(query);
+
+        res.json({ products, totalCount });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching products', error });
+    }
+});
+
+module.exports = router;
+```
+
+#### `routes/cartRoutes.js`:
+```javascript
+const express = require('express');
+const Cart = require('../models/cart');
+const Product = require('../models/product');
+
+const router = express.Router();
+
+// Add item to the cart
+router.post('/api/cart', async (req, res) => {
+    const { productId, quantity } = req.body;
+
+    try {
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        let cart = await Cart.findOne({ userId: req.userId });
+        if (!cart) {
+            cart = new Cart({ userId: req.userId, items: [] });
+        }
+
+        const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
+        if (itemIndex >= 0) {
+            cart.items[itemIndex].quantity += quantity;
+        } else {
+            cart.items.push({ productId, quantity });
+        }
+
+        await cart.save();
+        res.status(201).json({ message: 'Item added to cart', cart });
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding item to cart', error });
+    }
+});
+
+// Get cart items
+router.get('/api/cart', async (req, res) => {
+    try {
+        const cart = await Cart.findOne({ userId: req.userId }).populate('items.productId');
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart is empty' });
+        }
+        res.json(cart);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching cart', error });
+    }
+});
+
+module.exports = router;
+```
+
+#### `routes/orderRoutes.js`:
+```javascript
+const express = require('express');
+const Order = require('../models/order');
+const Cart = require('../models/cart');
+
+const router = express.Router();
+
+// Place order
+router.post('/api/orders', async (req, res) => {
+    const { totalAmount, cart } = req.body;
+    
+    try {
+        const order = new Order({
+            userId: req.userId,
+            items: cart.items.map(item => ({
+                productId: item.productId,
+                quantity: item.quantity,
+                price: item.productId.price
+            })),
+            totalAmount
+        });
+
+        await order.save();
+        res.status(201).json({ message: 'Order placed successfully', order });
+    } catch (error) {
+        res.status(500).json({ message: 'Error placing order', error });
+    }
+});
+
+// Get all orders for a user
+router.get('/api/orders', async (req, res) => {
+    try {
+        const orders = await Order.find({ userId: req.userId }).populate('items.productId');
+        res.json(orders);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching orders', error });
+    }
+});
+
+module.exports = router;
+```
+
+### Step 6: Set Up Express App (`app.js`)
+
+```javascript
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const productRoutes = require('./routes/productRoutes');
+const cartRoutes = require('./routes/cartRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+
+// Routes
+app.use(productRoutes);
+app.use(cartRoutes);
+app.use(orderRoutes);
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log('Connected to MongoDB');
+        app.listen(5000, () => {
+            console.log('Server is running on http://localhost:5000');
+        });
+    })
+    .catch(err => console.log('MongoDB connection error: ', err));
+```
+
+### Step 7: .env File
+Create a `.env` file in the root of your project with the MongoDB URI:
+
+```env
+MONGODB_URI=mongodb://localhost:27017/jojopal_trends
+```
+
+If you're using MongoDB Atlas, replace this with the Atlas connection string.
+
+### Step 8: Run the Application
+To run your backend:
+
+1. **Start MongoDB** if it's running locally.
+2. **Run the backend** with the following command:
+
+```bash
+node app.js
+```
+
+This will start your Express server, which
+
+ will be available at `http://localhost:5000`.
+
+### Step 9: Adjust Frontend for API Calls
+You may need to adjust the frontend to make API calls to the backend for product listing, cart management, and order placement (as shown in the `checkout.js` script). The frontend should interact with these API routes to fetch products, add items to the cart, and place orders.
+
+Let me know if you need further help with any of these steps!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const express = require('express');
+const mongoose = require('mongoose');
+const multer = require('multer');
+const path = require('path');
+
+// Initialize Express
+const app = express();
+
+// Connect to MongoDB
+mongoose.connect('mongodb://localhost/productsDB', { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Product Schema and Model
+const productSchema = new mongoose.Schema({
+    name: String,
+    price: Number,
+    category: String,
+    imageUrl: String,
+    additionalImages: [String],
+    description: String
+});
+
+const Product = mongoose.model('Product', productSchema);
+
+// Multer setup for file upload
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
+
+// Middleware to parse JSON and form data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
+
+// Route to upload a product
+app.post('/api/products', upload.array('additionalImages', 5), async (req, res) => {
+    const { name, price, category, description } = req.body;
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
+    const additionalImages = req.files ? req.files.map(file => `/uploads/${file.filename}`) : [];
+
+    const newProduct = new Product({
+        name,
+        price,
+        category,
+        description,
+        imageUrl,
+        additionalImages
+    });
+
+    try {
+        await newProduct.save();
+        res.status(200).json({ message: 'Product uploaded successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error uploading product', error });
+    }
+});
+
+// Start the server
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Upload</title>
+</head>
+<body>
+    <h1>Upload a New Product</h1>
+    <form id="product-form" enctype="multipart/form-data">
+        <label for="name">Product Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" required><br><br>
+
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+            <option value="electronics">Electronics</option>
+            <option value="clothing">Clothing</option>
+            <option value="home">Home</option>
+        </select><br><br>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea><br><br>
+
+        <label for="image">Main Image:</label>
+        <input type="file" id="image" name="image" accept="image/*" required><br><br>
+
+        <label for="additionalImages">Additional Images:</label>
+        <input type="file" id="additionalImages" name="additionalImages" accept="image/*" multiple><br><br>
+
+        <button type="submit">Upload Product</button>
+    </form>
+
+    <script>
+        // Handle the form submission
+        document.getElementById('product-form').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Create FormData object
+            const formData = new FormData(event.target);
+
+            try {
+                // Send the form data to the backend
+                const response = await fetch('/api/products', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert('Product uploaded successfully!');
+                    // Optionally clear the form or reset it after submission
+                    document.getElementById('product-form').reset();
+                } else {
+                    alert('Failed to upload product');
+                }
+            } catch (error) {
+                console.error('Error uploading product:', error);
+                alert('Error uploading product');
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+

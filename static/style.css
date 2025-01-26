@@ -1,0 +1,445 @@
+:root {
+    /* Primary color */
+    --primary-color: #8a1240; /* Reddish-Purple */
+    
+    /* Secondary color */
+    --secondary-color: #12408a; /* Deep Blue */
+    
+    /* Complementary color */
+    --complementary-color: #40a312; /* Olive Green */
+    
+    /* Accent color */
+    --accent-color: #e5a400; /* Golden Yellow */
+    
+    /* Neutral colors */
+    --light-gray: #f1f1f1; /* Light Gray */
+    --charcoal-gray: #2e2e2e; /* Charcoal Gray */
+  }
+  
+  
+
+
+
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--light-gray);
+    color: var(--charcoal-gray);
+}
+
+header {
+    background-color: var(--secondary-color);
+    color: var(--light-gray);
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+
+nav a {
+    color: #fff;
+    margin: 0 15px;
+    text-decoration: none;
+    padding: 15px;
+    border-radius: 12px;
+    transition: all ease-in 0.5s;
+}
+nav a:hover{
+    color: var(--light-gray);
+    background-color: var(--primary-color);
+    margin: 0 15px;
+    text-decoration: none;
+    border-bottom: solid 2px var(--light-gray);
+    padding: 15px;
+    border-radius: 12px;
+}
+nav a:active{
+    color: var(--primary-color);
+    margin: 0 15px;
+    text-decoration: none;
+    border-bottom: solid 2px var(--light-gray);
+    padding: 15px;
+    border-radius: 12px;
+}
+
+
+/* Hamburger Menu */
+#hamburger-menu {
+    display: none;
+    font-size: 30px;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+/* Navigation Links */
+.nav-links {
+    display: flex;
+    justify-content: center;
+}
+
+#search-bar {
+    margin-left: 10px;
+}
+
+#search-input {
+    top: 20px;
+    padding: 15px;
+    width: 60%;
+    height: 15px;
+    margin-right: 10px;
+    border-radius: 10px;
+    text-align: center;
+    outline: none;
+}
+
+#category-select {
+    padding: 10px;
+    width: 200px;
+}
+
+/* Product List Section */
+#product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.product-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+    transform: scale(1.05);
+}
+
+.product-card img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
+
+.product-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.product-card p {
+    color: var(--charcoal-gray);
+    font-size: 1.1rem;
+}
+
+button {
+    background-color: var(--primary-color);
+    color: var(--light-gray);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--primary-color);
+}
+
+/* Cart Icon Styles */
+#cart-icon-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+#cart-icon {
+    font-size: 2rem;
+    background-color: #fff;
+    border: 2px solid var(--charcoal-gray);
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--primary-color);
+    color: var(--light-gray);
+    font-size: 0.8rem;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+}
+
+/* Cart Section */
+#cart {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    border-radius: 8px;
+    z-index: 999;
+    display: none; /* Initially hidden */
+}
+
+#cart ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+#cart ul li {
+    margin: 10px 0;
+}
+
+.upload-form {
+    padding: 20px;
+    margin: 60px auto;
+    width: 60%;
+    background-color: var(--light-gray);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.upload-form input, #upload-form select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.upload-form button {
+    width: 60%;
+    margin: auto;
+    left: 30%;
+}
+
+/* Pagination */
+#pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#pagination button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    background-color: var(--primary-color);
+    color: var(--light-gray);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#pagination button:hover {
+    background-color: var(--primary-color);
+}
+
+/* Popup Styles */
+.popup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); /* Dark background */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    width: 70%;
+    max-width: 600px;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+}
+#mpesa-payment-btn{
+    background: url(mpess.jpeg);
+    background-size: contain;
+    width: 120px;
+    height: 80px;
+}
+#visa-payment-btn{
+    background: url(visa.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 120px;
+    height: 80px;
+}
+#mpesa-payment-btn{
+    background: url(mpess.jpeg);
+    background-size: contain;
+    width: 120px;
+    height: 80px;
+}
+
+#popup-product-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#popup-product-details img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+#close-popup {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color:var(--primary-color);
+    color: var(--primary-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#close-popup:hover {
+    background-color: darkred;
+}
+.nav-item{
+    position: sticky;
+    margin-top: 90vh;
+    bottom: 0;
+    align-items: center;
+    text-align: center;
+}
+.social-icons {
+    display: flex;
+    gap: 15px;
+    margin: auto;
+    margin-left: 45%;
+    width: 100%;
+    align-items: center;
+}
+
+.social-icons a {
+    color: var(--charcoal-gray); /* Change the color to match your design */
+    font-size: 1.5em;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: #007bff; /* Hover color */
+}
+
+
+/* Mobile Styles */
+@media (max-width: 600px) {
+    /* Hide normal navigation links and show hamburger */
+    .nav-links {
+        display: none;
+        width: 100%;
+        text-align: center;
+        flex-direction: column;
+        margin-top: 20px;
+    }
+
+    #hamburger-menu {
+        display: block; /* Show hamburger on mobile */
+    }
+
+    /* When menu is open, display the navigation links */
+    .nav-links.active {
+        display: block;
+    }
+
+    #search-input {
+        width: 100%;
+        margin-right: 0;
+        margin-top: 10px;
+    }
+
+    #category-select {
+        width: 100%;
+    }
+
+    #product-list {
+        grid-template-columns: 1fr; /* Single column on small screens */
+        padding: 10px;
+    }
+
+    .product-card {
+        padding: 15px;
+    }
+    #cart-icon-container {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+    }
+    
+    #cart-icon {
+        font-size: 2rem;
+        background-color:var(--light-gray);
+        border: 2px solid var(--charcoal-gray);
+        border-radius: 50%;
+        padding: 10px;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #cart-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: var(--primary-color);
+        color: white;
+        font-size: 0.8rem;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        line-height: 20px;
+    }
+}
+
+/* Tablet and Desktop Styles */
+@media (min-width: 601px) {
+    #hamburger-menu {
+        display: none; /* Hide hamburger on larger screens */
+    }
+
+    .nav-links {
+        display: flex;
+        justify-content: center;
+    }
+
+    
+}
