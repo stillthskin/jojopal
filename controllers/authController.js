@@ -8,6 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-jwt-secret-key';
 // Register a new user
 const registerUser = async (req, res) => {
   const { email, username, firstname, lastname, password, role } = req.body;
+  console.log('Form Data:', req.body);
 
   try {
     // Check if the email or username already exists
@@ -41,7 +42,9 @@ const registerUser = async (req, res) => {
 
 // Login an existing user
 const loginUser = async (req, res) => {
+  console.log('at login backend')
   const { email, password } = req.body;
+  console.log(email, password);
 
   try {
     // Find the user by email
@@ -68,9 +71,15 @@ const loginUser = async (req, res) => {
       { expiresIn: '1h' } // Set token expiration time (e.g., 1 hour)
     );
 
+    // Set the token in the cookies
+    res.cookie('token', token, {
+      httpOnly: true, // Prevents JavaScript from accessing the cookie
+      secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+      maxAge: 3600 * 1000, // 1 hour expiration
+    });
+
     res.json({
       message: 'Login successful!',
-      token, // Send the token to the client
       user: { email: user.email, username: user.username, role: user.role },
     });
   } catch (error) {
@@ -81,7 +90,9 @@ const loginUser = async (req, res) => {
 
 // Helper function to protect routes
 const protectRoute = async (req, res, next) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
+  // Check for token in Authorization header
+  const token = req.header('Authorization')?.replace('Bearer ', '') || req.cookies.token;
+  
   if (!token) {
     return res.status(401).json({ message: 'No token provided, authorization denied' });
   }

@@ -11,13 +11,13 @@
         <!-- Upload Product Section -->
         <section class="upload-form">
             <h2>Register: </h2>
-            <form id="register-form" action="">
-                <input type="text" id="email" placeholder="Email..." required>
-                <input type="test" id="username" placeholder="Username..." required>
-                <input type="test" id="firstname" placeholder="Firstname..." required>
-                <input type="test" id="lastname" placeholder="Lastname..." required>
-                <input type="password" id="password1" placeholder="password..." required>
-                <input type="password" id="password2" placeholder="Confirm password..." required>
+            <form id="register-form" action="" method="POST">
+                <input type="text" name="email" id="email"  placeholder="Email..." required>
+                <input type="test" name="username" id="username"  placeholder="Username..." required>
+                <input type="test" name="firstname" id="firstname"  placeholder="Firstname..." required>
+                <input type="test" name="lastname" id="lastname"   placeholder="Lastname..." required>
+                <input type="password" name="password" id="password"   placeholder="password..." required>
+                <input type="password" name="password1" id="password1" placeholder="Confirm password..." required>
                 <button type="submit">Register</button>
                 <P>Already a user yet? <a href="login.html">Login</a></P>
             </form>

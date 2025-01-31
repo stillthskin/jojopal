@@ -5,11 +5,23 @@ let filteredProducts = [];
 // Cart management
 let cart = [];
 
+// Toggle Navigation Menu
+const hamburger = document.getElementById('hamburger-menu');
+const navLinks = document.querySelector('nav-links');
+
+console.log(hamburger);
+
+hamburger.addEventListener('click', () => {
+    alert('Ham Clicked!');
+    navLinks.classList.toggle('active');
+});
+
+
 // Render products on the page
 async function renderProducts() {
     const productList = document.getElementById('product-list');
     productList.innerHTML = '';
-    
+
     const searchQuery = document.getElementById('search-input').value.toLowerCase();
     const category = document.getElementById('category-select').value;
     const page = currentPage;
@@ -79,8 +91,8 @@ document.getElementById('search-input').addEventListener('input', () => {
 // Add to cart functionality
 async function addToCart(product) {
     //console.log('1'+item.name);
-    console.log('2'+product._id);
-    console.log('2'+ product.name);
+    console.log('2' + product._id);
+    console.log('2' + product.name);
     const response = await fetch('/api/carts/add', {
         method: 'POST',
         headers: {
@@ -94,7 +106,7 @@ async function addToCart(product) {
         alert('Product added to cart');
         updateCart();
     } else {
-        alert('Failed: '+data.message);
+        alert('Failed: ' + data.message);
     }
 }
 
@@ -143,7 +155,7 @@ document.getElementById('checkout-btn').addEventListener('click', () => {
     // Store cart data and total amount in localStorage
     localStorage.setItem('cart', JSON.stringify(cart));
     localStorage.setItem('totalAmount', document.getElementById('cart-total').textContent);
-    
+
     // Redirect to checkout page
     window.location.href = 'checkout.html';
 });

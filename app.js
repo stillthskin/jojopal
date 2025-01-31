@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -10,11 +11,14 @@ const cartRoutes = require('./routes/cartRoute');
 const path = require('path')
 
 
+
+
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // Routes
 app.use('/api/products', productRoutes);  // Added route prefix for better structure

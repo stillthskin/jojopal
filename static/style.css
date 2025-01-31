@@ -3,9 +3,9 @@
     --primary-color: #8a1240; /* Reddish-Purple */
     
     /* Secondary color */
-    --secondary-color: #12408a; /* Deep Blue */
+    --secondary-color: #0a2a56 ; /* Deep Blue */
     
-    /* Complementary color */
+    /* Complementary color */ 
     --complementary-color: #40a312; /* Olive Green */
     
     /* Accent color */
@@ -14,11 +14,7 @@
     /* Neutral colors */
     --light-gray: #f1f1f1; /* Light Gray */
     --charcoal-gray: #2e2e2e; /* Charcoal Gray */
-  }
-  
-  
-
-
+}
 
 /* General Styles */
 * {
@@ -41,6 +37,7 @@ header {
     position: relative;
 }
 
+/* Navigation Links */
 nav a {
     color: #fff;
     margin: 0 15px;
@@ -49,7 +46,7 @@ nav a {
     border-radius: 12px;
     transition: all ease-in 0.5s;
 }
-nav a:hover{
+nav a:hover {
     color: var(--light-gray);
     background-color: var(--primary-color);
     margin: 0 15px;
@@ -58,7 +55,7 @@ nav a:hover{
     padding: 15px;
     border-radius: 12px;
 }
-nav a:active{
+nav a:active {
     color: var(--primary-color);
     margin: 0 15px;
     text-decoration: none;
@@ -66,7 +63,6 @@ nav a:active{
     padding: 15px;
     border-radius: 12px;
 }
-
 
 /* Hamburger Menu */
 #hamburger-menu {
@@ -78,12 +74,16 @@ nav a:active{
     right: 20px;
 }
 
-/* Navigation Links */
+/* Navigation Links Container */
 .nav-links {
     display: flex;
     justify-content: center;
+    transition: max-height 0.5s ease-out;
+    flex-direction: row;
+    align-items: center;
 }
 
+/* Search Bar */
 #search-bar {
     margin-left: 10px;
 }
@@ -97,11 +97,6 @@ nav a:active{
     border-radius: 10px;
     text-align: center;
     outline: none;
-}
-
-#category-select {
-    padding: 10px;
-    width: 200px;
 }
 
 /* Product List Section */
@@ -216,6 +211,7 @@ button:hover {
     margin: 10px 0;
 }
 
+/* Upload Form */
 .upload-form {
     padding: 20px;
     margin: 60px auto;
@@ -282,22 +278,18 @@ button:hover {
     text-align: center;
     position: relative;
 }
-#mpesa-payment-btn{
+
+#mpesa-payment-btn {
     background: url(mpess.jpeg);
     background-size: contain;
     width: 120px;
     height: 80px;
 }
-#visa-payment-btn{
+
+#visa-payment-btn {
     background: url(visa.png);
     background-size: contain;
     background-repeat: no-repeat;
-    width: 120px;
-    height: 80px;
-}
-#mpesa-payment-btn{
-    background: url(mpess.jpeg);
-    background-size: contain;
     width: 120px;
     height: 80px;
 }
@@ -319,7 +311,7 @@ button:hover {
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color:var(--primary-color);
+    background-color: var(--primary-color);
     color: var(--primary-color);
     border: none;
     padding: 10px 20px;
@@ -330,13 +322,15 @@ button:hover {
 #close-popup:hover {
     background-color: darkred;
 }
-.nav-item{
+
+.nav-item {
     position: sticky;
     margin-top: 90vh;
     bottom: 0;
     align-items: center;
     text-align: center;
 }
+
 .social-icons {
     display: flex;
     gap: 15px;
@@ -356,12 +350,10 @@ button:hover {
     color: #007bff; /* Hover color */
 }
 
-
 /* Mobile Styles */
 @media (max-width: 600px) {
-    /* Hide normal navigation links and show hamburger */
     .nav-links {
-        display: none;
+        display: none; /* Initially hidden on mobile */
         width: 100%;
         text-align: center;
         flex-direction: column;
@@ -374,11 +366,13 @@ button:hover {
 
     /* When menu is open, display the navigation links */
     .nav-links.active {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        align-items: center;  /* Center links */
     }
 
     #search-input {
-        width: 100%;
+        width: 80%; /* Adjust width for mobile screens */
         margin-right: 0;
         margin-top: 10px;
     }
@@ -395,16 +389,17 @@ button:hover {
     .product-card {
         padding: 15px;
     }
+
     #cart-icon-container {
         position: fixed;
         top: 20px;
         left: 20px;
         z-index: 1000;
     }
-    
+
     #cart-icon {
         font-size: 2rem;
-        background-color:var(--light-gray);
+        background-color: var(--light-gray);
         border: 2px solid var(--charcoal-gray);
         border-radius: 50%;
         padding: 10px;
@@ -414,7 +409,7 @@ button:hover {
         align-items: center;
         justify-content: center;
     }
-    
+
     #cart-badge {
         position: absolute;
         top: -5px;
@@ -440,6 +435,4 @@ button:hover {
         display: flex;
         justify-content: center;
     }
-
-    
 }

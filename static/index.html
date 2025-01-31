@@ -13,14 +13,32 @@
 <body>
     <header>
         <h2>JOJOPAL TRENDS</h2>
-        <br/>
-        <nav>
+        <br />
+        <!-- Hamburger Menu Icon (Hidden on Desktop) -->
+        <div id="hamburger-menu" class="hamburger-menu">
+            &#9776;
+        </div>
+        <!-- <nav class="nav">
+            <a href="#" class="closebtn" onclick="toggleNav()">&times;</a>
             <a href="#product-list">Shop</a> |
             <a href="upload.html">Upload Product</a> |
             <a href="eula.html">Terms</a> |
             <a href="login.html">Login</a> |
             <a href="login.html">About</a> |
-            <br/><br/>
+            <br /><br /> 
+            <div id="search-bar">
+                <input type="text" id="search-input" placeholder="Search Products...">
+            </div>
+        </nav> -->
+
+        <nav id="nav-links" class="nav-links sidebar">
+            <a href="#" class="closebtn" onclick="toggleNav()">&times;</a>
+            <a href="#product-list">Shop</a> |
+            <a href="upload.html">Upload Product</a> |
+            <a href="eula.html">Terms</a> |
+            <a href="login.html">Login</a> |
+            <a href="login.html">About</a> |
+            <br /><br />
             <!-- Search Bar -->
             <div id="search-bar">
                 <input type="text" id="search-input" placeholder="Search Products...">
@@ -64,7 +82,7 @@
         <ul id="cart-items"></ul>
         <p>Total: $<span id="cart-total">0.00</span></p>
         <button id="clear-cart">Clear Cart</button>
-        <br/>
+        <br />
         <button id="checkout-btn">Proceed to Checkout</button>
     </section>
 
@@ -78,23 +96,18 @@
         </div>
     </div>
 
-  
- 
-                    <li class="nav-item">
-                        <div class="social-icons">
-                            <a href="https://facebook.com" target="_blank" title="Facebook"><i
-                                    class="fab fa-facebook"></i></a>
-                            <a href="https://twitter.com" target="_blank" title="Twitter"><i
-                                    class="fab fa-twitter"></i></a>
-                            <a href="https://instagram.com" target="_blank" title="Instagram"><i
-                                    class="fab fa-instagram"></i></a>
-                            <a href="https://linkedin.com" target="_blank" title="LinkedIn"><i
-                                    class="fab fa-linkedin"></i></a>
-                            <a href="https://github.com" target="_blank" title="GitHub"><i
-                                    class="fab fa-github"></i></a>
-                        </div>
-                    </li>
-                </ul>
+
+
+    <li class="nav-item">
+        <div class="social-icons">
+            <a href="https://facebook.com" target="_blank" title="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="https://twitter.com" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://instagram.com" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://linkedin.com" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+        </div>
+    </li>
+    </ul>
 
     <!-- Link to the external JavaScript file -->
     <script src="new.js"></script>
