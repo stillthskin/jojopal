@@ -6,7 +6,7 @@ const { protectRoute } = require('../controllers/authController')
 const router = express.Router();
 
 // Add item to the cart
-router.post('/add',protectRoute, async (req, res) => {
+router.post('/add', protectRoute, async (req, res) => {
     const { productId, quantity } = req.body;
 
     try {
@@ -35,7 +35,7 @@ router.post('/add',protectRoute, async (req, res) => {
 });
 
 // Get cart items
-router.get('/cartitems', async (req, res) => {
+router.get('/cartitems', protectRoute, async (req, res) => {
     try {
         const cart = await Cart.findOne({ userId: req.userId }).populate('items.productId');
         if (!cart) {
@@ -44,6 +44,26 @@ router.get('/cartitems', async (req, res) => {
         res.json(cart);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching cart', error });
+    }
+});
+
+// Clear all items from the cart
+router.delete('/clearcart', protectRoute, async (req, res) => {
+    try {
+        // Find the user's cart by their userId and set the items array to empty
+        const cart = await Cart.findOneAndUpdate(
+            { userId: req.userId },
+            { $set: { items: [] } }, // Clears the items array in the cart
+            { new: true } // Returns the updated cart
+        );
+
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+
+        res.status(200).json({ message: 'Cart cleared successfully', cart });
+    } catch (error) {
+        res.status(500).json({ message: 'Error clearing cart', error });
     }
 });
 

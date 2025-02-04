@@ -16,6 +16,13 @@ hamburger.addEventListener('click', () => {
     navLinks.classList.toggle('active');
 });
 
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
 
 // Render products on the page
 async function renderProducts() {
@@ -111,26 +118,52 @@ async function addToCart(product) {
 }
 
 // Update cart view
-function updateCart() {
-    const cartItems = document.getElementById('cart-items');
-    const cartTotal = document.getElementById('cart-total');
-    const cartBadge = document.getElementById('cart-badge');
-    cartItems.innerHTML = '';
-
-    let total = 0;
-    let itemCount = 0;
-
-    cart.forEach(item => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${item.name} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}`;
-        cartItems.appendChild(listItem);
-        total += item.price * item.quantity;
-        itemCount += item.quantity;
+async function updateCart() {
+    // Get the token from the cookies (JWT should be stored here)
+    //const token = getCookie('token');
+ 
+    // Fetch cart data from the backend
+    const response = await fetch('/api/carts/cartitems', {
+        method: 'GET'
+        // headers: {
+        //     'Authorization': `Bearer ${token}`
+        // }
     });
 
+    if (!response.ok) {
+        console.error('Error fetching cart');
+        return;
+    }
+
+    const data = await response.json();
+    const cart = data || {};  // Default to empty object if cart is null
+    const cartItems = cart.items || [];  // Default to empty array if items is undefined
+    
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+    const cartBadge = document.getElementById('cart-badge');
+    cartItemsContainer.innerHTML = '';
+    
+    let total = 0;
+    let itemCount = 0;
+    
+    // Safely render the cart items
+    if (Array.isArray(cartItems)) {
+        cartItems.forEach(item => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${item.productId.name} (x${item.quantity}) - $${(item.productId.price * item.quantity).toFixed(2)}`;
+            cartItemsContainer.appendChild(listItem);
+            total += item.productId.price * item.quantity;
+            itemCount += item.quantity;
+        });
+    } else {
+        console.error('Cart items are not an array or are missing:', cartItems);
+    }
+    
     cartTotal.textContent = total.toFixed(2);
     cartBadge.textContent = itemCount;
 
+    // Show or hide the cart based on item count
     if (itemCount > 0) {
         document.getElementById('cart').style.display = 'block';
     } else {
@@ -145,10 +178,40 @@ document.getElementById('cart-icon').addEventListener('click', () => {
 });
 
 // Clear cart functionality
-document.getElementById('clear-cart').addEventListener('click', () => {
-    cart = [];
-    updateCart();
+// Clear cart functionality
+document.getElementById('clear-cart').addEventListener('click', async () => {
+    // const token = getCookie('token');  // Get the token from cookies
+    // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>Token'+token);
+    // if (!token) {
+    //     alert('You must be logged in to clear the cart');
+    //     return;
+    // }
+
+    try {
+        const response = await fetch('/api/carts/clearcart', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+                //'Authorization': `Bearer ${token}`  // Send the token in the header
+            }
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert('Cart cleared successfully!');
+            cart = []; // Clear the cart from the frontend as well
+            updateCart(); // Refresh the cart UI
+        } else {
+            alert('Failed to clear the cart: ' + data.message);
+        }
+    } catch (error) {
+        console.error('Error clearing the cart:', error);
+        alert('An error occurred while clearing the cart');
+    }
 });
+
+
 
 // Proceed to checkout
 document.getElementById('checkout-btn').addEventListener('click', () => {
